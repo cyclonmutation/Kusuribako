@@ -23,6 +23,16 @@
         android:layout_below="@+id/nameTextView"
         android:layout_alignParentStart="true" />
 
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/imageView"
+        android:background="#d3d3d3"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true" />
+
+
     <TextView
         android:text="1回あたりの服用量"
         android:id="@+id/dosageTextView"
@@ -38,13 +48,22 @@
         android:layout_below="@+id/dosageTextView" />
 
     <!--単位はプルダウン選択にしたい（錠、袋）-->
-    <EditText
-        android:id="@+id/unitEditText"
-        android:layout_width="100dp"
+
+    <Spinner
+        android:id="@+id/unit_spinner"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
         android:layout_below="@+id/dosageTextView"
-        android:layout_toRightOf="@id/dosageEditText"/>
+        android:layout_toRightOf="@+id/dosageEditText"
+        android:background="#eeeeff" />
+
+    <!--<EditText-->
+        <!--android:id="@+id/unitEditText"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:inputType="text"-->
+        <!--android:layout_below="@+id/dosageTextView"-->
+        <!--android:layout_toRightOf="@id/dosageEditText"/>-->
 
 
     <!--頻度はプルダウン選択にしたい（毎日、特定の曜日、頓服）-->
@@ -95,15 +114,6 @@
     <!--private boolean mLeftCheck;     //残量チェック要否-->
     <!--private int mLeftVolume;        //残数（チェックが必要な場合のみ）-->
 
-
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/imageView"
-        android:layout_below="@+id/hourEditText"
-        android:background="#d3d3d3"
-        android:layout_centerHorizontal="true" />
-
     <Button
         android:id="@+id/sendButton"
         android:layout_width="match_parent"
@@ -111,7 +121,7 @@
         android:text="登録する"
         android:textColor="@color/colorButtonText"
         android:background="@color/colorButtonBackground"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@+id/hourEditText"
         android:layout_alignParentStart="true"
         android:layout_marginTop="5dp" />
 

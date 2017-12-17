@@ -109,4 +109,5 @@ public class Pill extends RealmObject implements Serializable {
 ////        mLeftVolume = leftVolume;
 //    }
 
+    
 }
