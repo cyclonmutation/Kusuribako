@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context="jp.csp.kusuribako.PillInputActivity">
+
+    <TextView
+        android:text="薬の名前"
+        android:id="@+id/nameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/nameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_below="@+id/nameTextView"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="1回あたりの服用量"
+        android:id="@+id/dosageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nameEditText" />
+
+    <EditText
+        android:id="@+id/dosageEditText"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_below="@+id/dosageTextView" />
+
+    <!--単位はプルダウン選択にしたい（錠、袋）-->
+    <EditText
+        android:id="@+id/unitEditText"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_below="@+id/dosageTextView"
+        android:layout_toRightOf="@id/dosageEditText"/>
+
+
+    <!--頻度はプルダウン選択にしたい（毎日、特定の曜日、頓服）-->
+    <TextView
+        android:text="いつ飲む？"
+        android:id="@+id/frequencyTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dosageEditText" />
+
+    <EditText
+        android:id="@+id/frequencyEditText"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_below="@+id/frequencyTextView" />
+
+    <!--毎日 or 特定の曜日の場合のみ、1日の回数と時間を指定-->
+    <TextView
+        android:text="1日に飲む回数"
+        android:id="@+id/timesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frequencyEditText" />
+
+    <EditText
+        android:id="@+id/timesEditText"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_below="@+id/timesTextView" />
+
+    <TextView
+        android:text="飲む時間"
+        android:id="@+id/hourTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timesEditText" />
+
+    <EditText
+        android:id="@+id/hourEditText"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_below="@+id/hourTextView" />
+
+    <!--将来的に残量チェックを入れる？-->
+    <!--private boolean mLeftCheck;     //残量チェック要否-->
+    <!--private int mLeftVolume;        //残数（チェックが必要な場合のみ）-->
+
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/imageView"
+        android:layout_below="@+id/hourEditText"
+        android:background="#d3d3d3"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="登録する"
+        android:textColor="@color/colorButtonText"
+        android:background="@color/colorButtonBackground"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp" />
+
+</RelativeLayout>
