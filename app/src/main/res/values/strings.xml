@@ -3,4 +3,23 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="everyday">毎日</string>
+    <string name="week">特定の曜日</string>
+    <string name="once">頓服</string>
+
+    <string name="monday">月</string>
+    <string name="tuesday">火</string>
+    <string name="wednesday">水</string>
+    <string name="thursday">木</string>
+    <string name="friday">金</string>
+    <string name="saturday">土</string>
+    <string name="sunday">日</string>
+
+    <string name="morning">朝</string>
+    <string name="noon">昼</string>
+    <string name="night">夜</string>
+    <string name="beforegdb">寝る前</string>
+
+
 </resources>

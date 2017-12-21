@@ -17,20 +17,21 @@
 
     <EditText
         android:id="@+id/nameEditText"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:inputType="text"
+        android:layout_alignEnd="@+id/checkbox_beforegtb"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/nameTextView"
-        android:layout_alignParentStart="true" />
+        android:inputType="text" />
 
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:id="@+id/imageView"
-        android:background="#d3d3d3"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true" />
+        android:background="#d3d3d3" />
 
 
     <TextView
@@ -38,7 +39,8 @@
         android:id="@+id/dosageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/nameEditText" />
+        android:layout_below="@+id/nameEditText"
+        android:layout_marginTop="15dp"/>
 
     <EditText
         android:id="@+id/dosageEditText"
@@ -47,39 +49,114 @@
         android:inputType="number"
         android:layout_below="@+id/dosageTextView" />
 
-    <!--単位はプルダウン選択にしたい（錠、袋）-->
-
+    <!--単位はプルダウン選択（錠、袋）-->
     <Spinner
         android:id="@+id/unit_spinner"
-        android:layout_width="match_parent"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/dosageEditText"
         android:layout_below="@+id/dosageTextView"
-        android:layout_toRightOf="@+id/dosageEditText"
-        android:background="#eeeeff" />
+        android:layout_toEndOf="@+id/dosageEditText"
+        android:background="#d3d3d3" />
 
-    <!--<EditText-->
-        <!--android:id="@+id/unitEditText"-->
-        <!--android:layout_width="100dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:inputType="text"-->
-        <!--android:layout_below="@+id/dosageTextView"-->
-        <!--android:layout_toRightOf="@id/dosageEditText"/>-->
-
-
-    <!--頻度はプルダウン選択にしたい（毎日、特定の曜日、頓服）-->
     <TextView
         android:text="いつ飲む？"
         android:id="@+id/frequencyTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dosageEditText" />
+        android:layout_below="@+id/dosageEditText"
+        android:layout_marginTop="15dp"/>
 
-    <EditText
-        android:id="@+id/frequencyEditText"
-        android:layout_width="200dp"
+    <CheckBox
+        android:text="@string/everyday"
+        android:id="@+id/checkbox_everyday"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        android:layout_below="@+id/frequencyTextView" />
+        android:layout_below="@id/frequencyTextView"/>
+
+    <CheckBox
+        android:id="@+id/checkbox_week"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkbox_everyday"
+        android:layout_alignBottom="@+id/checkbox_everyday"
+        android:layout_toEndOf="@+id/checkbox_everyday"
+        android:layout_marginLeft="10dp"
+        android:text="@string/week" />
+
+    <CheckBox
+        android:id="@+id/checkbox_once"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/checkbox_week"
+        android:layout_alignBottom="@+id/checkbox_week"
+        android:layout_toEndOf="@+id/checkbox_week"
+        android:layout_marginLeft="10dp"
+        android:text="@string/once" />
+
+    <TextView
+        android:text="曜日を選ぶ"
+        android:id="@+id/weekTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/checkbox_everyday"
+        android:layout_marginTop="15dp"/>
+
+    <CheckBox
+        android:id="@+id/checkbox_monday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/weekTextView"
+        android:text="@string/monday" />
+
+    <CheckBox
+        android:id="@+id/checkbox_tuesday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/checkbox_monday"
+        android:layout_toEndOf="@+id/checkbox_monday"
+        android:text="@string/tuesday" />
+
+    <CheckBox
+        android:id="@+id/checkbox_wednesday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/checkbox_tuesday"
+        android:layout_toEndOf="@+id/checkbox_tuesday"
+        android:text="@string/wednesday" />
+
+    <CheckBox
+        android:id="@+id/checkbox_thursday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/checkbox_wednesday"
+        android:layout_toEndOf="@+id/checkbox_wednesday"
+        android:text="@string/thursday" />
+
+    <CheckBox
+        android:id="@+id/checkbox_friday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/checkbox_thursday"
+        android:layout_toEndOf="@+id/checkbox_thursday"
+        android:text="@string/friday" />
+
+    <CheckBox
+        android:id="@+id/checkbox_saturday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/checkbox_friday"
+        android:layout_toEndOf="@+id/checkbox_friday"
+        android:text="@string/saturday" />
+
+    <CheckBox
+        android:id="@+id/checkbox_sunday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/checkbox_saturday"
+        android:layout_toEndOf="@+id/checkbox_saturday"
+        android:text="@string/sunday" />
 
     <!--毎日 or 特定の曜日の場合のみ、1日の回数と時間を指定-->
     <TextView
@@ -87,28 +164,44 @@
         android:id="@+id/timesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/frequencyEditText" />
+        android:layout_below="@+id/checkbox_monday"
+        android:layout_marginTop="15dp"/>
 
-    <EditText
-        android:id="@+id/timesEditText"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:layout_below="@+id/timesTextView" />
-
-    <TextView
-        android:text="飲む時間"
-        android:id="@+id/hourTextView"
+    <CheckBox
+        android:id="@+id/checkbox_morning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/timesEditText" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/timesTextView"
+        android:text="@string/morning" />
 
-    <EditText
-        android:id="@+id/hourEditText"
-        android:layout_width="100dp"
+    <CheckBox
+        android:id="@+id/checkbox_noon"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:layout_below="@+id/hourTextView" />
+        android:layout_alignTop="@+id/checkbox_morning"
+        android:layout_toEndOf="@+id/checkbox_morning"
+        android:layout_marginLeft="10dp"
+        android:text="@string/noon" />
+
+    <CheckBox
+        android:id="@+id/checkbox_night"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/checkbox_noon"
+        android:layout_toEndOf="@+id/checkbox_noon"
+        android:layout_marginLeft="10dp"
+        android:text="@string/night" />
+
+    <CheckBox
+        android:id="@+id/checkbox_beforegtb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/checkbox_night"
+        android:layout_toEndOf="@+id/checkbox_night"
+        android:layout_marginLeft="10dp"
+        android:text="@string/beforegdb" />
+
 
     <!--将来的に残量チェックを入れる？-->
     <!--private boolean mLeftCheck;     //残量チェック要否-->
@@ -118,11 +211,11 @@
         android:id="@+id/sendButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="登録する"
-        android:textColor="@color/colorButtonText"
-        android:background="@color/colorButtonBackground"
-        android:layout_below="@+id/hourEditText"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="5dp" />
+        android:layout_below="@+id/checkbox_morning"
+        android:background="@color/colorButtonBackground"
+        android:layout_marginTop="15dp"
+        android:text="登録する"
+        android:textColor="@color/colorButtonText" />
 
 </RelativeLayout>

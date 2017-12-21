@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         FragmentManager manager = getSupportFragmentManager();
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        ExampleFragmentPagerAdapter adapter = new ExampleFragmentPagerAdapter(manager);
+        FragmentPagerAdapter adapter = new FragmentPagerAdapter(manager);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);

@@ -1,23 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
         android:id="@+id/imageView"
-        android:layout_margin="2dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/nameTextView"
-        android:text="Name"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/imageView" />
+        android:layout_toRightOf="@+id/imageView"
+        android:text="Name"
+        android:layout_marginLeft="10dp"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/dosageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/nameTextView"
+        android:text="Dosage"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/frequencyTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nameTextView"
+        android:layout_toEndOf="@+id/imageView"
+        android:text="frequency"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="10dp"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/timesTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/frequencyTextView"
+        android:layout_below="@+id/frequencyTextView"
+        android:layout_marginTop="2dp"
+        android:text="times"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

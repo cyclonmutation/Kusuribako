@@ -38,6 +38,8 @@ public class PillListFragment extends Fragment {
 
     private ListView mListView;
     private PillAdapter mPillAdapter;
+    private StringBuilder mFrequencyStr, mTimesStr;
+
 
 //    private Spinner mSpinner;
 //    private ArrayList<String> mCategoryList = new ArrayList<>();
@@ -74,13 +76,8 @@ public class PillListFragment extends Fragment {
         mPillAdapter = new PillAdapter(getActivity());
         mListView = (ListView) view.findViewById(R.id.pillListView);
 
-//        //Spinnerの設定
-//        mSpinner = (Spinner) findViewById(R.id.category_spinner);
-//
-//        //仮データ
-////        String spinnerItems[] = {"all", "Spinner 1", "Spinner 2", "Spinner 3"};
-//
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mCategoryList);
+
+        //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mCategoryList);
 //        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        mSpinner.setAdapter(adapter);
 //
@@ -114,6 +111,7 @@ public class PillListFragment extends Fragment {
 //            }
 //        });
 //
+
         //ListViewをタップした時の処理
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -125,30 +123,31 @@ public class PillListFragment extends Fragment {
                 startActivity(intent);
             }
         });
-//
-//        //ListViewを長押しした時の処理
-//        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                //taskを削除する
-//                final Task task = (Task) parent.getAdapter().getItem(position);
-//
-//                //Dialog表示
-//                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//
-//                builder.setTitle("削除");
-//                builder.setMessage(task.getTitle() + "を削除しますか");
-//                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                        RealmResults<Task> results = mRealm.where(Task.class).equalTo("id", task.getId()).findAll();
-//
-//                        mRealm.beginTransaction();
-//                        results.deleteAllFromRealm();
-//                        mRealm.commitTransaction();
-//
-//                        //Alarmも削除する
+
+        //ListViewを長押しした時の処理
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //taskを削除する
+                final Pill pill = (Pill) parent.getAdapter().getItem(position);
+
+                //Dialog表示
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                builder.setTitle("削除");
+                builder.setMessage(pill.getName() + "を削除しますか？");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //★realmには残して、アラームを消し、次回以降登録時にsuggestできるとベター
+                        RealmResults<Pill> results = mRealm.where(Pill.class).equalTo("id", pill.getId()).findAll();
+
+                        mRealm.beginTransaction();
+                        results.deleteAllFromRealm();
+                        mRealm.commitTransaction();
+
+                        //Alarmも削除する
 //                        Intent resultIntent = new Intent(getApplicationContext(), TaskAlarmReceiver.class);
 //                        PendingIntent resultPendingIntent = PendingIntent.getBroadcast(
 //                                MainActivity.this,
@@ -158,24 +157,23 @@ public class PillListFragment extends Fragment {
 //                        );
 //                        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 //                        alarmManager.cancel(resultPendingIntent);
-//
-//                        reloadListView();
-//                    }
-//                });
-//                builder.setNegativeButton("CANCEL",null);
-//
-//                AlertDialog dialog = builder.create();
-//                dialog.show();
-//
-//                return true;
-//            }
-//        });
+
+                        reloadListView();
+                    }
+                });
+                builder.setNegativeButton("CANCEL",null);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return true;
+            }
+        });
 
         reloadListView();
 
         return view;
     }
-
 
 
     //再描画する
@@ -189,6 +187,7 @@ public class PillListFragment extends Fragment {
         //表示を更新するために、Adapterにdataが変更されたことを通知
         mPillAdapter.notifyDataSetChanged();
     }
+
 
 //★fragmentもonDestroy()を入れるべき？　MainActivityに入れるべき？
 //    @Override

@@ -146,20 +146,30 @@ public class TopFragment extends Fragment {
         //以下、昼、夜、寝る前も同様
         //ユーザ設定で、朝昼夜寝る時間のalarm時刻を設定できるようにした場合は、そのアラームの中間地点になるよう設定したい。
 
-        Time time = new Time("Asia/Tokyo");
-        time.setToNow();
-        if(time.hour <= 12){
-            Log.d("test_kusuri", "12" + String.valueOf(time.hour));
+//        Time time = new Time("Asia/Tokyo");
+//        time.setToNow();
 
-        } else if(time.hour <= 16) {
-            Log.d("test_kusuri", "16" + String.valueOf(time.hour));
-
-        } else if(time.hour <= 21) {
-            Log.d("test_kusuri", "21" + String.valueOf(time.hour));
-        } else {
-            Log.d("test_kusuri", "24" + String.valueOf(time.hour));
-
-        };
+        //まず、当日の情報だけ全てrealmで取得する
+        //毎日→全部取得
+        //曜日取得
+        //曜日とrealmの曜日が一致していたら取得
+        //回数は全部取っておく
+//
+//
+//        if(time.hour <= 12){
+//            Log.d("test_kusuri", "12" + String.valueOf(time.hour));
+//
+//            //
+//
+//        } else if(time.hour <= 16) {
+//            Log.d("test_kusuri", "16" + String.valueOf(time.hour));
+//
+//        } else if(time.hour <= 21) {
+//            Log.d("test_kusuri", "21" + String.valueOf(time.hour));
+//        } else {
+//            Log.d("test_kusuri", "24" + String.valueOf(time.hour));
+//
+//        };
 
         RealmResults<Pill> taskRealmResults = mRealm.where(Pill.class).findAll();
 

@@ -16,14 +16,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -36,12 +41,19 @@ public class PillInputActivity extends AppCompatActivity {
     private static final int CHOOSER_REQUEST_CODE = 100;
 
     private Pill mPill;
+    private int mFrequency;  //飲む頻度（1毎日、2特定の曜日、3頓服）
+    private byte[] mWeek = new byte[7];       //特定の曜日（月火水木金土日）
+    private byte[] mTimes = new byte[4];;      //飲む回数（朝、昼、夜、寝る前）
 
     //UI用
-    private EditText mNameEdit, mDosageEdit, mFrequencyEdit, mTimesEdit, mHourEdit;
+    private EditText mNameEdit, mDosageEdit;
     private Spinner mSpinner;
     private ImageView mImageView;
     private Uri mPictureUri; // カメラで撮影した画像を保存するURI
+    private TextView mWeekTextView, mTimesTextView;
+    private CheckBox mEverydayCB, mWeekCB, mOnceCB,
+            mMondayCB, mTuesdayCB, mWednesdayCB, mThursdayCB, mFridayCB, mSaturdayCB, mSundayCB,
+            mMorningCB, mNoonCB, mNightCB, mBeforegtbCB;
     private Button mSendButton;
 
     @Override
@@ -55,20 +67,126 @@ public class PillInputActivity extends AppCompatActivity {
         //UI部品の設定
         mNameEdit = (EditText)findViewById(R.id.nameEditText);
         mDosageEdit = (EditText)findViewById(R.id.dosageEditText);
-        mFrequencyEdit = (EditText)findViewById(R.id.frequencyEditText);
-        mTimesEdit = (EditText)findViewById(R.id.timesEditText);
-        mHourEdit = (EditText)findViewById(R.id.hourEditText);
-
-        mImageView = (ImageView) findViewById(R.id.imageView);
-        mImageView.setOnClickListener(mOnImageClickListenr);
-
-        mSendButton = (Button)findViewById(R.id.sendButton);
-        mSendButton.setOnClickListener(mOnDoneClickListener);
 
         //Spinnerの設定
         mSpinner = (Spinner) findViewById(R.id.unit_spinner);
         String spinnerItems[] = {"錠", "袋"};
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerItems);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapter);
+
+        mImageView = (ImageView) findViewById(R.id.imageView);
+        mImageView.setOnClickListener(mOnImageClickListener);
+
+        //Checkbox
+        mEverydayCB = (CheckBox)findViewById(R.id.checkbox_everyday);
+        mWeekCB = (CheckBox)findViewById(R.id.checkbox_week);
+        mOnceCB = (CheckBox)findViewById(R.id.checkbox_once);
+
+        mWeekTextView = (TextView) findViewById(R.id.weekTextView);
+        mMondayCB = (CheckBox)findViewById(R.id.checkbox_monday);
+        mTuesdayCB = (CheckBox)findViewById(R.id.checkbox_tuesday);
+        mWednesdayCB = (CheckBox)findViewById(R.id.checkbox_wednesday);
+        mThursdayCB = (CheckBox)findViewById(R.id.checkbox_thursday);
+        mFridayCB = (CheckBox)findViewById(R.id.checkbox_friday);
+        mSaturdayCB = (CheckBox)findViewById(R.id.checkbox_saturday);
+        mSundayCB = (CheckBox)findViewById(R.id.checkbox_sunday);
+
+        mTimesTextView = (TextView) findViewById(R.id.timesTextView);
+        mMorningCB = (CheckBox)findViewById(R.id.checkbox_morning);
+        mNoonCB = (CheckBox)findViewById(R.id.checkbox_noon);
+        mNightCB = (CheckBox)findViewById(R.id.checkbox_night);
+        mBeforegtbCB = (CheckBox)findViewById(R.id.checkbox_beforegtb);
+
+        mSendButton = (Button)findViewById(R.id.sendButton);
+        mSendButton.setOnClickListener(mOnDoneClickListener);
+
+
+        // CheckboxがClickされた時に呼び出されるcallbackListenerを登録
+        mEverydayCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mEverydayCB.isChecked()) {
+                    mWeekCB.setEnabled(false);
+                    mOnceCB.setEnabled(false);
+
+                    mTimesTextView.setVisibility(View.VISIBLE);
+                    mMorningCB.setVisibility(View.VISIBLE);
+                    mNoonCB.setVisibility(View.VISIBLE);
+                    mNightCB.setVisibility(View.VISIBLE);
+                    mBeforegtbCB.setVisibility(View.VISIBLE);
+                }
+                else {
+                    mWeekCB.setEnabled(true);
+                    mOnceCB.setEnabled(true);
+
+                    mTimesTextView.setVisibility(View.GONE);
+                    mMorningCB.setVisibility(View.GONE);
+                    mNoonCB.setVisibility(View.GONE);
+                    mNightCB.setVisibility(View.GONE);
+                    mBeforegtbCB.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        mWeekCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mWeekCB.isChecked()) {
+                    mEverydayCB.setEnabled(false);
+                    mOnceCB.setEnabled(false);
+
+                    mWeekTextView.setVisibility(View.VISIBLE);
+                    mMondayCB.setVisibility(View.VISIBLE);
+                    mTuesdayCB.setVisibility(View.VISIBLE);
+                    mWednesdayCB.setVisibility(View.VISIBLE);
+                    mThursdayCB.setVisibility(View.VISIBLE);
+                    mFridayCB.setVisibility(View.VISIBLE);
+                    mSaturdayCB.setVisibility(View.VISIBLE);
+                    mSundayCB.setVisibility(View.VISIBLE);
+
+                    mTimesTextView.setVisibility(View.VISIBLE);
+                    mMorningCB.setVisibility(View.VISIBLE);
+                    mNoonCB.setVisibility(View.VISIBLE);
+                    mNightCB.setVisibility(View.VISIBLE);
+                    mBeforegtbCB.setVisibility(View.VISIBLE);
+                }
+                else {
+                    mEverydayCB.setEnabled(true);
+                    mOnceCB.setEnabled(true);
+
+                    mWeekTextView.setVisibility(View.GONE);
+                    mMondayCB.setVisibility(View.GONE);
+                    mTuesdayCB.setVisibility(View.GONE);
+                    mWednesdayCB.setVisibility(View.GONE);
+                    mThursdayCB.setVisibility(View.GONE);
+                    mFridayCB.setVisibility(View.GONE);
+                    mSaturdayCB.setVisibility(View.GONE);
+                    mSundayCB.setVisibility(View.GONE);
+
+                    mTimesTextView.setVisibility(View.GONE);
+                    mMorningCB.setVisibility(View.GONE);
+                    mNoonCB.setVisibility(View.GONE);
+                    mNightCB.setVisibility(View.GONE);
+                    mBeforegtbCB.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        mOnceCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mOnceCB.isChecked()) {
+                    mEverydayCB.setEnabled(false);
+                    mWeekCB.setEnabled(false);
+                }
+                else {
+                    mEverydayCB.setEnabled(true);
+                    mWeekCB.setEnabled(true);
+                }
+            }
+        });
 
         //EXTRA_PILLからPillのidを取得し、idからPillのinstance取得
         Intent intent = getIntent();
@@ -79,18 +197,38 @@ public class PillInputActivity extends AppCompatActivity {
 
 
         if (mPill == null) {
+            mWeekTextView.setVisibility(View.GONE);
+            mMondayCB.setVisibility(View.GONE);
+            mTuesdayCB.setVisibility(View.GONE);
+            mWednesdayCB.setVisibility(View.GONE);
+            mThursdayCB.setVisibility(View.GONE);
+            mFridayCB.setVisibility(View.GONE);
+            mSaturdayCB.setVisibility(View.GONE);
+            mSundayCB.setVisibility(View.GONE);
 
-
+            mTimesTextView.setVisibility(View.GONE);
+            mMorningCB.setVisibility(View.GONE);
+            mNoonCB.setVisibility(View.GONE);
+            mNightCB.setVisibility(View.GONE);
+            mBeforegtbCB.setVisibility(View.GONE);
 
         } else {
-            // 更新の場合
-            mNameEdit.setText(mPill.getName());
-            mDosageEdit.setText(mPill.getDosage());
+            // 更新の場合、登録されていた薬を表示する
+//            mNameEdit.setText(mPill.getName());
+//            mDosageEdit.setText(mPill.getDosage());
             //★Spinnerに今の値と一致するものを表示したい
-            mFrequencyEdit.setText(mPill.getFrequency());
-            mTimesEdit.setText(mPill.getmTimes());
-            //★選択したTimes（回数）に合わせてhourを複数設定できるようにしたい
-//            mHourEdit.setText(mPill.getmHour());
+
+
+            //★選択されていた項目と一致するCheckboxにチェックを入れたい
+//            for(int i=0; i< mPill.getFrequency().size(); i++ ){
+//                mFrequencyStr.append(mPill.getFrequency().get(i));
+//            }
+////            mFrequencyEdit.setText(stb);
+//
+//            for(int i=0; i< mPill.getmTimes().size(); i++ ){
+//                mTimesStr.append(mPill.getmTimes().get(i));
+//            }
+
 
         }
 
@@ -116,20 +254,106 @@ public class PillInputActivity extends AppCompatActivity {
 
         String name = mNameEdit.getText().toString();
 
-
         int dosage = Integer.parseInt(mDosageEdit.getText().toString());
         String unit = (String)mSpinner.getSelectedItem();
-        String frequency = mFrequencyEdit.getText().toString();
-        int times = Integer.parseInt(mTimesEdit.getText().toString());
-        ArrayList<String> hourList = null;
-        hourList.add(mHourEdit.getText().toString());
+
+        //Checkboxの選択状態に応じてFrequency、Week、Timesに値をセット。未設定の場合は0を入れる。
+        if(mEverydayCB.isChecked()){
+            mFrequency = 1;
+            Arrays.fill(mWeek, (byte) 0);
+            if(mMorningCB.isChecked()){
+                mTimes[0] = 1;
+            } else {
+                mTimes[0] = 0;
+            }
+            if(mNoonCB.isChecked()){
+                mTimes[1] = 1;
+            } else {
+                mTimes[1] = 0;
+            }
+            if(mNightCB.isChecked()){
+                mTimes[2] = 1;
+            } else {
+                mTimes[2] = 0;
+            }
+            if(mBeforegtbCB.isChecked()){
+                mTimes[3] = 1;
+            } else {
+                mTimes[3] = 0;
+            }
+        } else if(mWeekCB.isChecked()){
+            mFrequency = 2;
+
+            if(mMondayCB.isChecked()){
+                mWeek[0] = 1;
+            } else {
+                mWeek[0] = 0;
+            }
+            if(mTuesdayCB.isChecked()){
+                mWeek[1] = 1;
+            } else {
+                mWeek[1] = 0;
+            }
+            if(mWednesdayCB.isChecked()){
+                mWeek[2] = 1;
+            } else {
+                mWeek[2] = 0;
+            }
+            if(mThursdayCB.isChecked()){
+                mWeek[3] = 1;
+            } else {
+                mWeek[3] = 0;
+            }
+            if(mFridayCB.isChecked()){
+                mWeek[4] = 1;
+            } else {
+                mWeek[4] = 0;
+            }
+            if(mSaturdayCB.isChecked()){
+                mWeek[5] = 1;
+            } else {
+                mWeek[5] = 0;
+            }
+            if(mSundayCB.isChecked()){
+                mWeek[6] = 1;
+            } else {
+                mWeek[6] = 0;
+            }
+            if(mMorningCB.isChecked()){
+                mTimes[0] = 1;
+            } else {
+                mTimes[0] = 0;
+            }
+            if(mNoonCB.isChecked()){
+                mTimes[1] = 1;
+            } else {
+                mTimes[1] = 0;
+            }
+            if(mNightCB.isChecked()){
+                mTimes[2] = 1;
+            } else {
+                mTimes[2] = 0;
+            }
+            if(mBeforegtbCB.isChecked()){
+                mTimes[3] = 1;
+            } else {
+                mTimes[3] = 0;
+            }
+
+        } else {
+            mFrequency = 3;
+            Arrays.fill(mWeek, (byte) 0);
+            Arrays.fill(mTimes, (byte) 0);
+        }
+
+//        int times = Integer.parseInt(mTimesEdit.getText().toString());
 
         mPill.setName(name);
         mPill.setDosage(dosage);
         mPill.setUnit(unit);
-        mPill.setFrequency(frequency);
-        mPill.setmTimes(times);
-        mPill.setmHour(hourList);
+        mPill.setFrequency(mFrequency);
+        mPill.setWeek(mWeek);
+        mPill.setTimes(mTimes);
 
         //添付画像を取得
         BitmapDrawable drawable = (BitmapDrawable) mImageView.getDrawable();
@@ -138,9 +362,12 @@ public class PillInputActivity extends AppCompatActivity {
         if (drawable != null) {
             Bitmap bitmap = drawable.getBitmap();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
-            String bitmapString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
-            mPill.setImageBytes(bitmapString);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//            String bitmapString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+
+            //bitmapをbyte[]に変換して薬に追加
+            byte[] bytes = baos.toByteArray();
+            mPill.setImageBytes(bytes);
         }
 
         realm.copyToRealmOrUpdate(mPill);
@@ -180,7 +407,7 @@ public class PillInputActivity extends AppCompatActivity {
 
     //onClick：ImageViewがタップされた時の処理
     //ImageViewをタップしたときは必要であれば許可を求めるダイアログを表示。
-    private View.OnClickListener mOnImageClickListenr = new View.OnClickListener() {
+    private View.OnClickListener mOnImageClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v){
             //permissionの許可状態を確認
