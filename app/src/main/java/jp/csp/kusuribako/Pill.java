@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 
@@ -17,9 +18,6 @@ public class Pill extends RealmObject implements Serializable {
     private int mDosage;     //1回の服用量
     private String mUnit;    //1回の服用量の単位（袋、錠など）
 
-    private int mFrequency;  //飲む頻度（1、毎日、2、特定の日、3頓服）
-    private byte[] mWeek;      //特定の日の場合の曜日
-    private byte[] mTimes;     //飲む回数（1、朝、2、昼、3、夜、8寝る前）
 
 //    private ArrayList<String> mHourList;       //飲む時間（8時、20時など）
 //    private boolean mLeftCheck;     //残量チェック要否
@@ -28,6 +26,10 @@ public class Pill extends RealmObject implements Serializable {
     //idをprimary keyとして設定
     @PrimaryKey
     private int id;
+    private int mFrequency;  //飲む頻度（1、毎日、2、特定の日、3頓服）
+    private byte[] mWeek;      //特定の日の場合の曜日
+    private byte[] mTimes;     //飲む回数（1、朝、2、昼、3、夜、8寝る前）
+
 
     public int getId(){
         return id;

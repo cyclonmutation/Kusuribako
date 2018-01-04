@@ -25,8 +25,11 @@ public class PillAdapter extends BaseAdapter{
     //Pillを保持するlist
     private List<Pill> mPillList;
 
+    Context context; //追加
+
     public PillAdapter(Context context) {
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.context = context; //追加
     }
     public void setPillList(List<Pill> pillList) {
         mPillList = pillList;
@@ -67,102 +70,98 @@ public class PillAdapter extends BaseAdapter{
         TextView frequencyText = (TextView) convertView.findViewById(R.id.frequencyTextView);
         TextView timesText = (TextView) convertView.findViewById(R.id.timesTextView);
 
-        Log.d("test_kusuri_frequency", String.valueOf(mPillList.get(position).getFrequency()));
-        Log.d("test_kusuri_week", String.valueOf(mPillList.get(position).getWeek()));
-        Log.d("test_kusuri_times", String.valueOf(mPillList.get(position).getTimes()));
-
-
+        //頻度が毎日の場合、timeStringBuilderに朝昼夜寝る前を格納
         if(mPillList.get(position).getFrequency() == 1){
             StringBuilder timeSB = new StringBuilder();
-            Log.d("test_kusuri_timeSB", timeSB.toString());
-
             byte[] timeByte = mPillList.get(position).getTimes();
+
             if(timeByte[0] == 1){
-                timeSB.append(R.string.morning);
+                timeSB.append(this.context.getString(R.string.morning));
                 timeSB.append(" ");
             }
             if(timeByte[1] == 1){
-                timeSB.append(R.string.noon);
+                timeSB.append(this.context.getString(R.string.noon));
                 timeSB.append(" ");
             }
             if(timeByte[2] == 1){
-                timeSB.append(R.string.night);
+                timeSB.append(this.context.getString(R.string.night));
                 timeSB.append(" ");
             }
             if(timeByte[3] == 1){
-                timeSB.append(R.string.beforegdb);
+                timeSB.append(this.context.getString(R.string.beforegdb));
                 timeSB.append(" ");
             }
 
-            Log.d("test_kusuri_timeSB", timeSB.toString());
-//            //最後に空白が入っていたら消す
+            //最後に空白が入っていたら消す
 //            if(timeSB.lastIndexOf(" ") == 1){
 //                timeSB.deleteCharAt(timeSB.length());
 //            }
 
-            frequencyText.setText(R.string.everyday);
+
+            frequencyText.setText(this.context.getString(R.string.everyday));
             timesText.setText(timeSB.toString());
 
         } else if(mPillList.get(position).getFrequency() == 2){
             StringBuilder stb = new StringBuilder();
             byte[] data = mPillList.get(position).getWeek();
             if(data[0] == 1){
-                stb.append(R.string.monday);
+                stb.append(this.context.getString(R.string.monday));
                 stb.append(" ");
             }
             if(data[1] == 1){
-                stb.append(R.string.tuesday);
+                stb.append(this.context.getString(R.string.tuesday));
                 stb.append(" ");
             }
             if(data[2] == 1){
-                stb.append(R.string.wednesday);
+                stb.append(this.context.getString(R.string.wednesday));
                 stb.append(" ");
             }
             if(data[3] == 1){
-                stb.append(R.string.tuesday);
+                stb.append(this.context.getString(R.string.thursday));
                 stb.append(" ");
             }
             if(data[4] == 1){
-                stb.append(R.string.friday);
+                stb.append(this.context.getString(R.string.friday));
                 stb.append(" ");
             }
             if(data[5] == 1){
-                stb.append(R.string.saturday);
+                stb.append(this.context.getString(R.string.saturday));
                 stb.append(" ");
             }
             if(data[6] == 1){
-                stb.append(R.string.sunday);
+                stb.append(this.context.getString(R.string.sunday));
                 stb.append(" ");
             }
 
             //最後に空白が入っていたら消す
-            if(stb.lastIndexOf(" ") == 1){
-                stb.deleteCharAt(stb.length());
-            }
+//            if(stb.lastIndexOf(" ") == 1){
+//                stb.deleteCharAt(stb.length());
+//            }
 
             StringBuilder timeSB2 = new StringBuilder();
             byte[] timeByte2 = mPillList.get(position).getTimes();
             if(timeByte2[0] == 1){
-                timeSB2.append(R.string.morning);
+                timeSB2.append(this.context.getString(R.string.morning));
                 timeSB2.append(" ");
             }
             if(timeByte2[1] == 1){
-                timeSB2.append(R.string.noon);
+                timeSB2.append(this.context.getString(R.string.noon));
                 timeSB2.append(" ");
             }
             if(timeByte2[2] == 1){
-                timeSB2.append(R.string.night);
+                timeSB2.append(this.context.getString(R.string.night));
                 timeSB2.append(" ");
             }
             if(timeByte2[3] == 1){
-                timeSB2.append(R.string.beforegdb);
+                timeSB2.append(this.context.getString(R.string.beforegdb));
                 timeSB2.append(" ");
             }
 
-            //最後に空白が入っていたら消す
-            if(timeSB2.lastIndexOf(" ") == 1){
-                timeSB2.deleteCharAt(stb.length());
-            }
+//            //最後に空白が入っていたら消す
+//            if(timeSB2.lastIndexOf(" ") == 1){
+//                timeSB2.deleteCharAt(stb.length());
+//            }
+
             frequencyText.setText(stb.toString());
             timesText.setText(timeSB2.toString());
 
@@ -172,7 +171,7 @@ public class PillAdapter extends BaseAdapter{
         }
 
         byte[] bytes = mPillList.get(position).getImageBytes();
-        if (bytes.length != 0) {
+        if (bytes!=null && bytes.length != 0) {     //画像がある場合
             Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, bytes.length).copy(Bitmap.Config.ARGB_8888, true);
             ImageView imageView =(ImageView) convertView.findViewById(R.id.imageView);
             imageView.setImageBitmap(image);

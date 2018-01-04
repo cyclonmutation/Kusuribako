@@ -21,5 +21,10 @@
     <string name="night">夜</string>
     <string name="beforegdb">寝る前</string>
 
+    <string-array name="unit">
+        <item>錠</item>
+        <item>袋</item>
+    </string-array>
+
 
 </resources>

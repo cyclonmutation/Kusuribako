@@ -70,9 +70,9 @@ public class PillInputActivity extends AppCompatActivity {
 
         //Spinnerの設定
         mSpinner = (Spinner) findViewById(R.id.unit_spinner);
-        String spinnerItems[] = {"錠", "袋"};
+        String mSpinnerItems[] = getResources().getStringArray(R.array.unit);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerItems);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mSpinnerItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(adapter);
 
@@ -190,48 +190,113 @@ public class PillInputActivity extends AppCompatActivity {
 
         //EXTRA_PILLからPillのidを取得し、idからPillのinstance取得
         Intent intent = getIntent();
-        int taskId = intent.getIntExtra(PillListFragment.EXTRA_PILL, -1);
+        int pillId = intent.getIntExtra(PillListFragment.EXTRA_PILL, -1);
         Realm realm = Realm.getDefaultInstance();
-        mPill = realm.where(Pill.class).equalTo("id", taskId).findFirst();
+        mPill = realm.where(Pill.class).equalTo("id", pillId).findFirst();
         realm.close();
 
 
+        //選択されていた項目と一致するCheckboxにチェックを入れる
+        //毎日なら曜日のcheckbox非表示、頓服なら曜日と回数のcheckbox非表示
+        CheckBox[] frequencyArray = {mEverydayCB, mWeekCB, mOnceCB};
+        CheckBox[] weekArray = {mMondayCB, mTuesdayCB, mWednesdayCB, mThursdayCB, mFridayCB, mSaturdayCB, mSundayCB};
+        CheckBox[] timesArray = {mMorningCB, mNoonCB, mNightCB, mBeforegtbCB};
+
+
+        //新規登録の場合
         if (mPill == null) {
+            //曜日を非表示にする
             mWeekTextView.setVisibility(View.GONE);
-            mMondayCB.setVisibility(View.GONE);
-            mTuesdayCB.setVisibility(View.GONE);
-            mWednesdayCB.setVisibility(View.GONE);
-            mThursdayCB.setVisibility(View.GONE);
-            mFridayCB.setVisibility(View.GONE);
-            mSaturdayCB.setVisibility(View.GONE);
-            mSundayCB.setVisibility(View.GONE);
+            for(int i=0; i < weekArray.length; i++){
+                weekArray[i].setVisibility(View.GONE);
+            }
 
+            //回数を非表示にする
             mTimesTextView.setVisibility(View.GONE);
-            mMorningCB.setVisibility(View.GONE);
-            mNoonCB.setVisibility(View.GONE);
-            mNightCB.setVisibility(View.GONE);
-            mBeforegtbCB.setVisibility(View.GONE);
+            for(int i=0; i < timesArray.length; i++){
+                timesArray[i].setVisibility(View.GONE);
+            }
 
+        // 更新の場合、登録されていた薬を表示する
         } else {
-            // 更新の場合、登録されていた薬を表示する
-//            mNameEdit.setText(mPill.getName());
-//            mDosageEdit.setText(mPill.getDosage());
-            //★Spinnerに今の値と一致するものを表示したい
+            mNameEdit.setText(mPill.getName());
+            mDosageEdit.setText(String.valueOf(mPill.getDosage()));
 
+            //★unitのSpinnerに今の値と一致するものを表示する
+            //spinnerの数だけ文字列をfor文で回しつつ
+            for(int i=0; i < mSpinnerItems.length; i++){
+                if(mSpinnerItems[i].equals(mPill.getUnit())){
+                    mSpinner.setSelection(i);
+                }
+            }
 
-            //★選択されていた項目と一致するCheckboxにチェックを入れたい
-//            for(int i=0; i< mPill.getFrequency().size(); i++ ){
-//                mFrequencyStr.append(mPill.getFrequency().get(i));
-//            }
-////            mFrequencyEdit.setText(stb);
-//
-//            for(int i=0; i< mPill.getmTimes().size(); i++ ){
-//                mTimesStr.append(mPill.getmTimes().get(i));
-//            }
+            mFrequency = mPill.getFrequency();
+            if(mFrequency == 1){
+                mEverydayCB.setChecked(true);
+                mWeekCB.setEnabled(false);
+                mOnceCB.setEnabled(false);
 
+                //曜日を非表示にする
+                mWeekTextView.setVisibility(View.GONE);
+                for(int i=0; i < weekArray.length; i++){
+                    weekArray[i].setVisibility(View.GONE);
+                }
 
+                //回数にcheck
+                byte[] timesBytes = mPill.getTimes();
+                for (int i=0; i < mPill.getTimes().length; i++){
+                    if(timesBytes[i] == 1){
+                        timesArray[i].setChecked(true);
+                    }
+                }
+
+            } else if(mFrequency == 2){
+                mWeekCB.setChecked(true);
+                mEverydayCB.setEnabled(false);
+                mOnceCB.setEnabled(false);
+
+                //曜日にcheck
+                byte[] weekBytes = mPill.getWeek();
+                for (int i=0; i < mPill.getWeek().length; i++){
+                    if(weekBytes[i] == 1){
+                        weekArray[i].setChecked(true);
+                    }
+                }
+
+                //回数にcheck
+                byte[] timesBytes = mPill.getTimes();
+                for (int i=0; i < mPill.getTimes().length; i++){
+                    if(timesBytes[i] == 1){
+                        timesArray[i].setChecked(true);
+                    }
+                }
+
+            } else {
+                mOnceCB.setChecked(true);
+                mEverydayCB.setEnabled(false);
+                mWeekCB.setEnabled(false);
+
+                //曜日を非表示にする
+                mWeekTextView.setVisibility(View.GONE);
+                for(int i=0; i < weekArray.length; i++){
+                    weekArray[i].setVisibility(View.GONE);
+                }
+
+                //回数を非表示にする
+                mTimesTextView.setVisibility(View.GONE);
+                for(int i=0; i < timesArray.length; i++){
+                    timesArray[i].setVisibility(View.GONE);
+                }
+            }
+
+            //画像が登録されていれば登録画像を表示する
+            Bitmap bmp = null;
+            if (mPill.getImageBytes() != null) {
+                bmp = BitmapFactory.decodeByteArray(mPill.getImageBytes(), 0, mPill.getImageBytes().length);
+            }
+            //BitmapをImageViewに設定
+            mImageView.setImageBitmap(bmp);
         }
-
     }
 
     private void addPill(){
@@ -257,96 +322,25 @@ public class PillInputActivity extends AppCompatActivity {
         int dosage = Integer.parseInt(mDosageEdit.getText().toString());
         String unit = (String)mSpinner.getSelectedItem();
 
+        CheckBox[] weekArray = {mMondayCB, mTuesdayCB, mWednesdayCB, mThursdayCB, mFridayCB, mSaturdayCB, mSundayCB};
+        CheckBox[] timesArray = {mMorningCB, mNoonCB, mNightCB, mBeforegtbCB};
+
         //Checkboxの選択状態に応じてFrequency、Week、Timesに値をセット。未設定の場合は0を入れる。
         if(mEverydayCB.isChecked()){
             mFrequency = 1;
             Arrays.fill(mWeek, (byte) 0);
-            if(mMorningCB.isChecked()){
-                mTimes[0] = 1;
-            } else {
-                mTimes[0] = 0;
-            }
-            if(mNoonCB.isChecked()){
-                mTimes[1] = 1;
-            } else {
-                mTimes[1] = 0;
-            }
-            if(mNightCB.isChecked()){
-                mTimes[2] = 1;
-            } else {
-                mTimes[2] = 0;
-            }
-            if(mBeforegtbCB.isChecked()){
-                mTimes[3] = 1;
-            } else {
-                mTimes[3] = 0;
-            }
+            setCheckboxTimes(timesArray);
+
         } else if(mWeekCB.isChecked()){
             mFrequency = 2;
-
-            if(mMondayCB.isChecked()){
-                mWeek[0] = 1;
-            } else {
-                mWeek[0] = 0;
-            }
-            if(mTuesdayCB.isChecked()){
-                mWeek[1] = 1;
-            } else {
-                mWeek[1] = 0;
-            }
-            if(mWednesdayCB.isChecked()){
-                mWeek[2] = 1;
-            } else {
-                mWeek[2] = 0;
-            }
-            if(mThursdayCB.isChecked()){
-                mWeek[3] = 1;
-            } else {
-                mWeek[3] = 0;
-            }
-            if(mFridayCB.isChecked()){
-                mWeek[4] = 1;
-            } else {
-                mWeek[4] = 0;
-            }
-            if(mSaturdayCB.isChecked()){
-                mWeek[5] = 1;
-            } else {
-                mWeek[5] = 0;
-            }
-            if(mSundayCB.isChecked()){
-                mWeek[6] = 1;
-            } else {
-                mWeek[6] = 0;
-            }
-            if(mMorningCB.isChecked()){
-                mTimes[0] = 1;
-            } else {
-                mTimes[0] = 0;
-            }
-            if(mNoonCB.isChecked()){
-                mTimes[1] = 1;
-            } else {
-                mTimes[1] = 0;
-            }
-            if(mNightCB.isChecked()){
-                mTimes[2] = 1;
-            } else {
-                mTimes[2] = 0;
-            }
-            if(mBeforegtbCB.isChecked()){
-                mTimes[3] = 1;
-            } else {
-                mTimes[3] = 0;
-            }
+            setCheckboxWeek(weekArray);
+            setCheckboxTimes(timesArray);
 
         } else {
             mFrequency = 3;
             Arrays.fill(mWeek, (byte) 0);
             Arrays.fill(mTimes, (byte) 0);
         }
-
-//        int times = Integer.parseInt(mTimesEdit.getText().toString());
 
         mPill.setName(name);
         mPill.setDosage(dosage);
@@ -394,6 +388,27 @@ public class PillInputActivity extends AppCompatActivity {
 
     }
 
+    //特定の曜日のCheckboxにチェックが入っていれば、mWeek[]に1を入れる
+    private void setCheckboxWeek(CheckBox[] checkboxArray) {
+        for(int i = 0; i < checkboxArray.length; i++){
+            if(checkboxArray[i].isChecked()){
+                mWeek[i] = 1;
+            }else{
+                mWeek[i] = 0;
+            }
+        }
+    }
+
+    //飲む回数（朝昼夜寝る前）のCheckboxにチェックが入っていれば、mTimes[]に1を入れる
+    private void setCheckboxTimes(CheckBox[] checkboxArray) {
+        for(int i = 0; i < checkboxArray.length; i++){
+            if(checkboxArray[i].isChecked()){
+                mTimes[i] = 1;
+            }else{
+                mTimes[i] = 0;
+            }
+        }
+    }
 
 
     //SendButton押下後、realmに保存、更新後、finish()してInputActivityを閉じて前画面（MainActivity）に戻る

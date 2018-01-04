@@ -11,8 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.text.format.Time;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -140,41 +144,91 @@ public class TopFragment extends Fragment {
 
     //再描画する
     private void reloadListView() {
-        //★RealmDBから「直近2回分」を取得
-
-        //現在時刻がAMなら、朝をチェックして、アラームがクリアされていれば、昼と夜の分の表示。朝が未チェックなら朝と昼の表示。
-        //以下、昼、夜、寝る前も同様
-        //ユーザ設定で、朝昼夜寝る時間のalarm時刻を設定できるようにした場合は、そのアラームの中間地点になるよう設定したい。
-
 //        Time time = new Time("Asia/Tokyo");
 //        time.setToNow();
 
-        //まず、当日の情報だけ全てrealmで取得する
-        //毎日→全部取得
-        //曜日取得
-        //曜日とrealmの曜日が一致していたら取得
-        //回数は全部取っておく
+        //今日の曜日
+        Calendar cal = Calendar.getInstance();
+        //月曜を週初めに設定する
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);   //現在の時
+        int week = cal.get(Calendar.DAY_OF_WEEK) - 1;  //1日曜〜7土曜
+//        String[] week_name = {"日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"};
+//        Log.d("test_kusuri_week[]", week_name[week]);
+
+        //全てをrealmで取得する
+//        RealmResults<Pill> pillRealmResults = mRealm.where(Pill.class).findAll();
+
+        byte[] weekbyte = new byte[7];
+        for(int w=1; w < weekbyte.length; w++){
+            if(week == w){  //今日が日曜なら
+                weekbyte[7] = 1;
+            }
+        }
+
+        //条件指定して取得の場合
+        RealmResults<Pill> pillRealmResults = mRealm.where(Pill.class)
+                //毎日→全部取得
+                .equalTo("mFrequency", 1)
+
+                //曜日とrealmの曜日が一致していたら取得したい★
+//                .or()
+//                .beginGroup()
+//                    .equalTo("mFequency", "2")
+//                    .equalTo("mWeek", weekbyte)
+//                .endGroup()
+                .findAll();
+
+//        for(int i=0; i < pillRealmResults.size(); i++){
+//            Pill pill = pillRealmResults.get(i);
+//
+//            if(pill.getFrequency() == 1){
+//                //毎日は全てそのままcontinue
+//
+//            } else if(pill.getFrequency() == 2){
+//                //特定の週で、曜日が一致しなかったら削除
+//
+//                for(int j=0; j < pill.getWeek().length; j++){
+//                    byte[] weekByte = pill.getWeek();   //月曜始まり
+//                    if(weekByte[j] == week){
+//                        //あれば削除しない
+//                    } else {
+//                        //本日以外なので削除する
+////                        pillRealmResults.deleteFromRealm(i);
+//                    }
+//                }
+//            } else {
+//                //その他（頓服）は全て削除
+////                pillRealmResults.deleteFromRealm(i);
+//            }
+//        }
+
+//        //回数を取得し、現在時刻に合わせて表示するものを変える
+//        if(hour <= 12){
+//            Log.d("test_kusuri", "12" + String.valueOf(hour));
+//        //0〜12時：朝、昼の薬を取得
+//        RealmResults<Pill> pillRealmResults = mRealm.where(Pill.class)
+//                .equalTo("mTimes", "1")
+//                .or()
+//                .equalTo("mTimes", "1")
+//                .findAll();
+//        } else if(hour <= 16) {
+//            Log.d("test_kusuri", "16" + String.valueOf(hour));
+//        //12〜16時：昼、夜の薬を取得
+//
+//        } else if(hour <= 21) {
+//            Log.d("test_kusuri", "21" + String.valueOf(hour));
+//        //16〜21時：夜、寝る前の薬を取得
 //
 //
-//        if(time.hour <= 12){
-//            Log.d("test_kusuri", "12" + String.valueOf(time.hour));
-//
-//            //
-//
-//        } else if(time.hour <= 16) {
-//            Log.d("test_kusuri", "16" + String.valueOf(time.hour));
-//
-//        } else if(time.hour <= 21) {
-//            Log.d("test_kusuri", "21" + String.valueOf(time.hour));
 //        } else {
-//            Log.d("test_kusuri", "24" + String.valueOf(time.hour));
+//            Log.d("test_kusuri", "24" + String.valueOf(hour));
+//        //21〜24時：寝る前、朝の薬を取得
 //
 //        };
 
-        RealmResults<Pill> taskRealmResults = mRealm.where(Pill.class).findAll();
-
         //上記結果をPillListとしてmPillAdapterにset
-        mPillAdapter.setPillList(mRealm.copyFromRealm(taskRealmResults));
+        mPillAdapter.setPillList(mRealm.copyFromRealm(pillRealmResults));
         //TaskのListView用のAdapterに渡す
         mListView.setAdapter(mPillAdapter);
         //表示を更新するために、Adapterにdataが変更されたことを通知
