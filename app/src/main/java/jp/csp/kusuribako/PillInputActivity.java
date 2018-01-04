@@ -355,13 +355,15 @@ public class PillInputActivity extends AppCompatActivity {
         //添付画像が設定されていれば画像を取得してBASE64Encode
         if (drawable != null) {
             Bitmap bitmap = drawable.getBitmap();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            if(bitmap != null) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 //            String bitmapString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
 
-            //bitmapをbyte[]に変換して薬に追加
-            byte[] bytes = baos.toByteArray();
-            mPill.setImageBytes(bytes);
+                //bitmapをbyte[]に変換して薬に追加
+                byte[] bytes = baos.toByteArray();
+                mPill.setImageBytes(bytes);
+            }
         }
 
         realm.copyToRealmOrUpdate(mPill);
@@ -416,65 +418,83 @@ public class PillInputActivity extends AppCompatActivity {
         @Override
         public void onClick(View v){
 
-//            if(mNameEdit.getText().toString().length() == 0) {
-//                //名前が未入力の場合はエラー表示
-//                Snackbar.make(v, "名前を入力してください", Snackbar.LENGTH_LONG).show();
-//                return;
-//            }
-//
-//            if(mDosageEdit.getText().toString().length() == 0) {
-//                //量が未入力の場合はエラー表示
-//                Snackbar.make(v, "1回あたりの服用量を入力してください", Snackbar.LENGTH_LONG).show();
-//                return;
-//            }
-//
-//            CheckBox[] frequencyArray = {mEverydayCB, mWeekCB, mOnceCB};
-//            CheckBox[] weekArray = {mMondayCB, mTuesdayCB, mWednesdayCB, mThursdayCB, mFridayCB, mSaturdayCB, mSundayCB};
-//            CheckBox[] timesArray = {mMorningCB, mNoonCB, mNightCB, mBeforegtbCB};
-//
-//            for(int i=0; i<frequencyArray.length; i++){
-//                if(frequencyArray[i].isChecked()){
-//                    //頻度にチェックが入っていれば何もしない
-//                } else {
-//                    //頻度いずれかにチェックが入っていなければエラー
-//                    Snackbar.make(v, "いつ飲むかを選択してください", Snackbar.LENGTH_LONG).show();
-//                    return;
-//                }
-//            }
-//
-//            //毎日にチェックが入っている場合
-//            if(frequencyArray[0].isChecked()){
-//                //回数にチェックが入っていなければエラー
-//                for(int i=0; i<timesArray.length; i++){
-//                    if(timesArray[i].isChecked()){
-//                    } else {
-//                        //回数いずれかにチェックが入っていなければエラー
-//                        Snackbar.make(v, "1日に飲む回数を選択してください", Snackbar.LENGTH_LONG).show();
-//                        return;
-//                    }
-//                }
-//            }
-//            //特定の曜日にチェックが入っている場合
-//            if(frequencyArray[1].isChecked()){
-//                //回数にチェックが入っていなければエラー
-//                for(int i=0; i<weekArray.length; i++){
-//                    if(weekArray[i].isChecked()){
-//                    } else {
-//                        //曜日いずれかにチェックが入っていなければエラー
-//                        Snackbar.make(v, "曜日を選択してください", Snackbar.LENGTH_LONG).show();
-//                        return;
-//                    }
-//                }
-//                //回数にチェックが入っていなければエラー
-//                for(int i=0; i<timesArray.length; i++){
-//                    if(timesArray[i].isChecked()){
-//                    } else {
-//                        //回数いずれかにチェックが入っていなければエラー
-//                        Snackbar.make(v, "1日に飲む回数を選択してください", Snackbar.LENGTH_LONG).show();
-//                        return;
-//                    }
-//                }
-//            }
+            if(mNameEdit.getText().toString().length() == 0) {
+                //名前が未入力の場合はエラー表示
+                Snackbar.make(v, "名前を入力してください", Snackbar.LENGTH_LONG).show();
+                return;
+            }
+
+            if(mDosageEdit.getText().toString().length() == 0) {
+                //量が未入力の場合はエラー表示
+                Snackbar.make(v, "1回あたりの服用量を入力してください", Snackbar.LENGTH_LONG).show();
+                return;
+            }
+
+            CheckBox[] frequencyArray = {mEverydayCB, mWeekCB, mOnceCB};
+            CheckBox[] weekArray = {mMondayCB, mTuesdayCB, mWednesdayCB, mThursdayCB, mFridayCB, mSaturdayCB, mSundayCB};
+            CheckBox[] timesArray = {mMorningCB, mNoonCB, mNightCB, mBeforegtbCB};
+
+            //Frequencyチェックボックスいずれかにチェックが入ってなければエラーを返す
+            int checkFrequencyNum = 0;
+            for(int i=0; i<frequencyArray.length; i++){
+                if(frequencyArray[i].isChecked()){
+                    checkFrequencyNum++;
+                    break;
+                } else {
+                }
+            }
+            if(checkFrequencyNum == 0){
+                Snackbar.make(v, "いつ飲むかを選択してください", Snackbar.LENGTH_LONG).show();
+                return;
+            }
+
+            //毎日にチェックが入っている場合
+            if(frequencyArray[0].isChecked()){
+                //回数にチェックが入っていなければエラー
+                int checkTimesNum = 0;
+                for(int i=0; i<timesArray.length; i++){
+                    if(timesArray[i].isChecked()){
+                        checkTimesNum++;
+                        break;
+                    } else {
+                    }
+                }
+                if(checkTimesNum == 0){
+                    Snackbar.make(v, "1日に飲む回数を選択してください", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+            }
+
+            //特定の曜日にチェックが入っている場合
+            if(frequencyArray[1].isChecked()){
+                //曜日にチェックが入っていなければエラー
+                int checkWeekNum = 0;
+                for(int i=0; i<weekArray.length; i++){
+                    if(weekArray[i].isChecked()){
+                        checkWeekNum++;
+                        break;
+                    } else {
+                    }
+                }
+                if(checkWeekNum == 0){
+                    Snackbar.make(v, "曜日を選択してください", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
+                //回数にチェックが入っていなければエラー
+                int checkTimesNum = 0;
+                for(int i=0; i<timesArray.length; i++){
+                    if(timesArray[i].isChecked()){
+                        checkTimesNum++;
+                        break;
+                    } else {
+                    }
+                }
+                if(checkTimesNum == 0){
+                    Snackbar.make(v, "1日に飲む回数を選択してください", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+            }
 
             addPill();
             finish();
