@@ -24,7 +24,6 @@
         android:layout_below="@+id/nameTextView"
         android:inputType="text" />
 
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="100dp"

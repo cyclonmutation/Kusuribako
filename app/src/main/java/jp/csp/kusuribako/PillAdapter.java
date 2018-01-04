@@ -105,31 +105,31 @@ public class PillAdapter extends BaseAdapter{
             StringBuilder stb = new StringBuilder();
             byte[] data = mPillList.get(position).getWeek();
             if(data[0] == 1){
-                stb.append(this.context.getString(R.string.monday));
+                stb.append(this.context.getString(R.string.sunday));
                 stb.append(" ");
             }
             if(data[1] == 1){
-                stb.append(this.context.getString(R.string.tuesday));
+                stb.append(this.context.getString(R.string.monday));
                 stb.append(" ");
             }
             if(data[2] == 1){
-                stb.append(this.context.getString(R.string.wednesday));
+                stb.append(this.context.getString(R.string.tuesday));
                 stb.append(" ");
             }
             if(data[3] == 1){
-                stb.append(this.context.getString(R.string.thursday));
+                stb.append(this.context.getString(R.string.wednesday));
                 stb.append(" ");
             }
             if(data[4] == 1){
-                stb.append(this.context.getString(R.string.friday));
+                stb.append(this.context.getString(R.string.thursday));
                 stb.append(" ");
             }
             if(data[5] == 1){
-                stb.append(this.context.getString(R.string.saturday));
+                stb.append(this.context.getString(R.string.friday));
                 stb.append(" ");
             }
             if(data[6] == 1){
-                stb.append(this.context.getString(R.string.sunday));
+                stb.append(this.context.getString(R.string.saturday));
                 stb.append(" ");
             }
 
